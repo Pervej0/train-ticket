@@ -1,11 +1,27 @@
 import { Server } from "http";
 import app from "./app";
+import { MongoClient, ServerApiVersion } from "mongodb";
+import config from "./app/config";
 const PORT = 8080;
+
+const client = new MongoClient(config.URI as string, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
+});
+
+console.log(config.URI);
 
 let server: Server;
 
-const main = () => {
-  server = app.listen(PORT, () => {
+const main = async () => {
+  await client.connect();
+  await client.db("admin").command({ ping: 1 });
+  console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
+  server = app.listen(config.PORT, () => {
     console.log("Server is running on port: ", PORT);
   });
 };
@@ -27,4 +43,9 @@ process.on("uncaughtException", () => {
   process.exit(1);
 });
 
-main();
+try {
+  main();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} catch (error: any) {
+  console.log(error);
+}

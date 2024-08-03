@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
 
 const globalErrorHandler = (
   err: any,
@@ -8,9 +9,14 @@ const globalErrorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  const statusCode = 500;
-  const message = err.message || "Something Went Wrong!";
+  let statusCode = StatusCodes.BAD_REQUEST;
+  let message = err.message || "Something Went Wrong!";
   const error = err;
+
+  if (err instanceof mongoose.Error.ValidationError) {
+    statusCode = StatusCodes.FORBIDDEN;
+    message = err.message;
+  }
 
   res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     statusCode,

@@ -1,11 +1,11 @@
-import mongoose, { model } from "mongoose";
+import mongoose from "mongoose";
 import { TRegister } from "./auth.type";
 const { Schema } = mongoose;
 
 const userRegisterSchema = new Schema({
   fullName: {
     type: String,
-    required: [true, "FullName is required"],
+    required: [true, "fullName is required"],
   },
   email: {
     type: String,
@@ -20,6 +20,6 @@ const userRegisterSchema = new Schema({
   },
 });
 
-const userModel = model<TRegister>("user", userRegisterSchema);
+const userModel = mongoose.model<TRegister>("user", userRegisterSchema);
 
 export default userModel;

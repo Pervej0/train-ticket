@@ -1,9 +1,13 @@
 import express, { Request, Response } from "express";
 import notFound from "./app/middleware/notFound";
+import rootRouter from "./app/routes";
 const app = express();
 
 // json parser
 app.use(express.json());
+
+// all routes
+app.use("/api/v1", rootRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send({

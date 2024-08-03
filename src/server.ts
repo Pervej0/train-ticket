@@ -1,24 +1,13 @@
 import { Server } from "http";
 import app from "./app";
-import { MongoClient, ServerApiVersion } from "mongodb";
 import config from "./app/config";
+import mongoose from "mongoose";
 const PORT = 8080;
-
-const client = new MongoClient(config.URI as string, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
-
-console.log(config.URI);
 
 let server: Server;
 
 const main = async () => {
-  await client.connect();
-  await client.db("admin").command({ ping: 1 });
+  await mongoose.connect(config.URI as string);
   console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
   server = app.listen(config.PORT, () => {

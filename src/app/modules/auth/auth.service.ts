@@ -1,4 +1,4 @@
-import userModel from "./auth.schema";
+import userModel from "./auth.model";
 import { TRegister } from "./auth.type";
 
 export const createUserDB = async (payload: TRegister) => {

@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import notFound from "./app/middleware/notFound";
 import rootRouter from "./app/routes";
+import globalErrorHandler from "./app/middleware/globalErrorHandler";
 const app = express();
 
 // json parser
@@ -16,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
   });
 });
 
+app.use(globalErrorHandler);
 // not found api middleware
 app.use(notFound);
 

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import mongoose from "mongoose";
 
-const globalErrorHandler = (
+const globalErrorHandler: ErrorRequestHandler = (
   err: any,
   req: Request,
   res: Response,
@@ -11,14 +10,22 @@ const globalErrorHandler = (
 ) => {
   let statusCode = StatusCodes.BAD_REQUEST;
   let message = err.message || "Something Went Wrong!";
-  const error = err;
+  let error = err;
 
-  if (err instanceof mongoose.Error.ValidationError) {
+  if (err.name === "ValidationError") {
     statusCode = StatusCodes.FORBIDDEN;
     message = err.message;
+    error = err.errors;
+  } else if (err?.code === 11000) {
+    message = error.message;
+    const errorFields = Object.keys(err.keyValue).map(
+      (val) => `${val} value must be unique!`
+    );
+    message = errorFields.join("");
   }
 
-  res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+  res.status(err.status || StatusCodes.INTERNAL_SERVER_ERROR);
+  res.json({
     statusCode,
     success: false,
     message: message,

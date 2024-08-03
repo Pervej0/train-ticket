@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { TRegister } from "./auth.type";
+import { hashedPassword } from "./auth.utils";
 const { Schema } = mongoose;
 
 const userRegisterSchema = new Schema({
@@ -19,6 +20,9 @@ const userRegisterSchema = new Schema({
     minlength: [6, "Password must be at least 6 characters long"],
   },
 });
+
+// middleware
+hashedPassword(userRegisterSchema);
 
 const userModel = mongoose.model<TRegister>("user", userRegisterSchema);
 

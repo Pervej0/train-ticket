@@ -1,5 +1,7 @@
 import { Schema } from "mongoose";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { TTokenPayload } from "./auth.type";
 
 export const hashedPassword = (schema: Schema) => {
   schema.pre("save", async function (next) {
@@ -8,4 +10,9 @@ export const hashedPassword = (schema: Schema) => {
     }
     next();
   });
+};
+
+export const createToken = (payload: TTokenPayload, key: string) => {
+  const token = jwt.sign(payload, key);
+  return token;
 };

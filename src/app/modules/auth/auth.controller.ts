@@ -10,6 +10,10 @@ export const createUser: RequestHandler = async (
   try {
     const data = req.body;
     const result = await createUserDB(data);
+
+    // pass refreshToken inside cookie
+    res.cookie("refreshToken", result.refreshToken);
+
     res.status(StatusCodes.CREATED).json({
       statusCode: StatusCodes.CREATED,
       success: true,

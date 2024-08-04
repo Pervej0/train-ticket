@@ -3,7 +3,7 @@ import { TRegister } from "./auth.type";
 import { hashedPassword } from "./auth.utils";
 const { Schema } = mongoose;
 
-const userRegisterSchema = new Schema({
+const userRegisterSchema = new Schema<TRegister>({
   fullName: {
     type: String,
     required: [true, "fullName is required"],

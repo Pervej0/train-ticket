@@ -1,6 +1,8 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { createUserDB } from "./auth.service";
+import { createUserDB, loginDB } from "./auth.service";
+import asyncCatch from "../../utils/asyncCatch";
+import sendResponse from "../../utils/sendResponse";
 
 export const createUser: RequestHandler = async (
   req: Request,
@@ -25,3 +27,14 @@ export const createUser: RequestHandler = async (
     next(error);
   }
 };
+
+export const login: RequestHandler = asyncCatch(async (req, res) => {
+  const result = await loginDB(req.body);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "User logged in successfully!",
+    data: result,
+  });
+});
